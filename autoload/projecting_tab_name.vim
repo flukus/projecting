@@ -1,15 +1,5 @@
 
 fun! projecting_tab_name#activated()
-
-	call projecting#debug('projecting_tab_name#activated')
-	if exists('b:project')
-		if exists('b:ext_tab_name.name')
-			let t:ext_tab_name = b:project.ext_tab_name.name
-		else
-			let t:ext_tab_name = b:project.name
-		endif
-	endif
-
 endf
 
 fun! projecting_tab_name#deactivated()
@@ -21,6 +11,16 @@ fun! projecting_tab_name#getName()
 	if exists('t:ext_tab_name_override')
 		return t:ext_tab_name_override
 	endif
+
+	if exists('b:project')
+		if exists('b:ext_tab_name.name')
+			return  b:project.ext_tab_name.name
+		else
+			return  b:project.name
+		endif
+	endif
+
+
 
 	if exists('t:ext_tab_name')
 		return t:ext_tab_name
