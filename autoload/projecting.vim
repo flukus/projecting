@@ -26,7 +26,7 @@ function! projecting#create(project)
 	endfor
 
 	if exists('l:p.parent')
-		let parent = 0
+		let parent = {}
 		if exists('s:projects.' . l:p.parent)
 			let parent = s:projects[l:p.parent]
 		else
