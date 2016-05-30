@@ -50,5 +50,16 @@ function! projecting_make#make(...)
 endfunction
 
 function! projecting_make#makeComplete(arg, line, pos)
-	return exists('b:project.ext_make.options ') ? b:project.ext_make.options : []
+	if !exists('b:project.ext_make.options') 
+		return []
+	endif
+	let results = []
+	for x in b:project.ext_make.options
+		let isMatch = x =~? a:arg
+		if isMatch
+			let results += [x]
+		endif
+	endfor
+	call sort(results)
+	return results
 endfunction
