@@ -38,6 +38,7 @@ endfunction
 
 function! projecting_dbe#setConnection(connection)
 	let b:project._dbe.lastConnection = a:connection
+	exec 'DBSetOption ""'
 	exec 'DBSetOption ' . a:connection
 endfunction
 
