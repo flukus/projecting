@@ -152,8 +152,8 @@ endfunction
 
 function! projecting#activateProject(project)
 	call projecting#debug('projecting#activateProject')
-	if exists('*' . a:project.name . 'OnActivate')
-		exec 'call ' . a:project.name . 'OnActivate()'
+	if exists('*' . a:project.name . '#onActivate')
+		exec 'call ' . a:project.name . '#onActivate()'
 	endif
 
 	for kvp in items(a:project)
@@ -171,8 +171,8 @@ endfunction
 
 function! projecting#deactivateProject(project)
 	call projecting#debug('projecting#deactivateProject')
-	if exists('*' . a:project.name . 'OnDeActivate')
-		exec 'call ' . a:project.name . 'OnDeActivate()'
+	if exists('*' . a:project.name . '#onDeactivate')
+		exec 'call ' . a:project.name . '#onDeactivate()'
 	endif
 	for kvp in items(a:project)
 		if kvp[0] =~ 'ext_'
