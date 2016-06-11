@@ -55,3 +55,14 @@ call projecting#create({
 \})
 ```
 
+## Mappings
+
+Projecting doesn't come with any mappings out of the box, believing that this is something best left to the user.
+However here are some suggested mapping to put in your vimrc:
+
+```vim
+nmap <Leader>pp :ProjectLoad "not the trailing space, project load can auto complete
+nmap <Leader>pd :DBSwitch "this is how you switch databases with the dbext extension
+nmap <leader>pm :call projecting_make#make()<CR> "call the default make option of the make extensions
+```
+
