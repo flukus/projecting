@@ -1,6 +1,6 @@
 # Projecting
 
-Projecting is an simple, fast and extensible project switcher for vim with the following features:
+Projecting is an simple, fast and extendable project switcher for vim with the following features:
 
 
 * Easy configuration in pure vim script
@@ -8,71 +8,6 @@ Projecting is an simple, fast and extensible project switcher for vim with the f
 * Support for nested/child projects
 * A number of built in extensions for popular plugins
 * Easy to extend
-
-
-## Configuration
-
-Setting up a project is easy,
-just tell projecting it's name, location and an optional default file to open.
-Here is a project for your vimfiels
-
-
-```vim
-call projecting#create({
-	\'name': 'vimfiles',
-	\'dir': 'c:\\Users\\username\\vimfiles\\',
-	\'defaultFile': 'vimrc',
-\})
-```
-
-Calling ":ProjectLoad vimfiles" will switch the working directory to the project]and load the vimrc file.
-Then it will set any extension settings.
-
-Additionally, the project and settings will be set be opening a file in a configured project.
-
-Generally it's a good idea to put each project in it's own source file, ie projects/vimfiles.vim
-
-Extensions are setup in the same place.
-Here is the same project configure ctrlp to ignore the bundles directory:
-
-```vim
-call projecting#create({
-	\'name': 'vimfiles',
-	\'dir': 'c:\\Users\\username\\vimfiles\\',
-	\'defaultFile': 'vimrc',
-	\'ext_ctrlp': {'ignoreDir': 'bundle'},
-\})
-```
-More on the specific extensions below.
-
-Child projects can be configured just by setting the parent name, projecting will handle the rest.
-Here is how this project is configures in my vimfiles:
-
-```vim
-call projecting#create({
-	\'name': 'projecting',
-	\'dir': 'c:\\Users\\username\\vimfiles\\projecting\\',
-	\'parent': 'vimfiles',
-	\'defaultFile': 'autoload\projecting.vim',
-\})
-```
-
-Additionally, projecting has hooks that your projects can use.
-My vimfiles project for example, has a command to add new projects:
-
-```vim
-function! vimfiles#onActivate()
-	command! -nargs=1 AddProject call VimfilesAddProject(<f-args>)
-endfunction
-
-function! vimfiles#onDeactivate()
-	delc AddProject
-endfunction
-```
-
-This way, the command is only available as long as the project is active.
-
-
 
 ## Mappings
 
@@ -84,6 +19,87 @@ nmap <Leader>pp :ProjectLoad "note the trailing space, project load can auto com
 nmap <Leader>pd :DBSwitch "this is how you switch databases with the dbext extension
 nmap <leader>pm :call projecting_make#make()<CR> "call the default make option of the make extensions
 ```
+
+
+## Configuration
+
+Setting up a project is easy,
+just tell projecting it's name, location and an optional default file to open.
+Here is a project for your vimfiles:
+
+
+```vim
+call projecting#create({
+	\'name': 'vimfiles',
+	\'dir': 'c:\\Users\\username\\vimfiles\\',
+	\'defaultFile': 'vimrc',
+\})
+```
+
+Calling ":ProjectLoad vimfiles" will switch the working directory to the project and load the vimrc file.
+Then it will set any extension settings.
+
+This can be in your vimrc, although it's recommended to go in a project file like "~/vimfiles/projects/vimfiles.vim .
+It's up to you to source the file in your vimrc.
+
+Extensions are setup in the same place and configured with "ext\_" properties.
+Here is the same project configuring ctrlp to ignore the bundles directory(more on extensions below):
+
+```vim
+call projecting#create({
+	\'name': 'vimfiles',
+	\'dir': 'c:\\Users\\username\\vimfiles\\',
+	\'defaultFile': 'vimrc',
+	\'ext_ctrlp': {'ignoreDir': 'bundle'},
+\})
+```
+
+Because it is just a normal vim file any code can go in here.
+To make reloading and configuring easier it is recommended to add aut0 reloading (projecting will play nice):
+
+```vim
+augroup vimfilesGroup " {
+	autocmd!
+	au BufWritePost *.vim source % "Autoreload vim files
+augroup END " }
+```
+
+Child projects can be configured just by setting the parent name, projecting will handle the rest.
+Here is how projecting itself is configures in my vimfiles:
+
+```vim
+call projecting#create({
+	\'name': 'projecting',
+	\'dir': 'c:\\Users\\username\\vimfiles\\projecting\\',
+	\'parent': 'vimfiles',
+	\'defaultFile': 'autoload\projecting.vim',
+\})
+```
+
+Finally, projecting has hooks that your projects can use.
+My vimfiles project for example, has a command to add new projects:
+
+```vim
+function! vimfiles#onActivate()
+	command! -nargs=1 AddProject call vimfiles#AddProject(<f-args>)
+endfunction
+
+function! vimfiles#onDeactivate()
+	delc AddProject
+endfunction
+
+function! vimfiles#AddProject(name)
+	"create a new file
+	exec 'e projects/' . a:name . '.vim'
+	call append(line('$'), "project")
+	normal! G$
+	"trigger snipmate
+	call feedkeys("A\<Tab>")
+endfunction
+```
+
+This way, the command is only available as long as the project is active.
+
 
 ## Plugins
 
@@ -108,17 +124,19 @@ It takes a number of configuration options:
 * default is the default target
 * efm is the error format to parse the results with
 
-This can be invoked with the command:
+This can be invoked with the commands:
 
 ```vim
-:Make
+"call the default target
+:Make<CR>
+"call a custom target/targets (supports auto complete)
 :Make test
 ```
 
 
 ### Ctrlp
 
-Ctrlp is great, but it often includes a bunch of files I don't care about.
+[Ctrlp](https://github.com/kien/ctrlp.vim) is great, but it often includes a bunch of files I don't care about.
 When I'm modifying my vimfiles I don't care about the bundles dir, so I simply add it to the ignored directories:
 
 ```vim
@@ -130,7 +148,7 @@ call projecting#create({
 \})
 ```
 
-The other options is ignoreFile, both should be a regex of which files you'd like ctrlp to ignore.
+The other option is ignoreFile, both should be a regex of which files you'd like ctrlp to ignore.
 Some common ones are node modules, nuget packages and build output.
 
 
@@ -160,8 +178,8 @@ Additionally you can override it manually:
 
 ### DBext
 
-The dbext plugin is for setting and selecting database configurations on a per project basis.
-It is configured like this:
+[Dbext](https://github.com/vim-scripts/dbext.vim) is a great plugin for working with databases.
+The extensions makes it easy to switch database connections on a per project basis:
 
 ```vim
 \'ext_dbe': { 'databases': [
