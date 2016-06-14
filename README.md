@@ -164,10 +164,10 @@ The dbext plugin is for setting and selecting database configurations on a per p
 It is configured like this:
 
 ```vim
-let s:databases = [
+\'ext_dbe': { 'databases': [
 	\{ 'name': 'test1', 'default': 1, 'connection': 'extra= -w 50000 -s ^|:type=ASE:user=mbosa:passwd=pwd:srvname=localhost:dbname=test:port=5000' },
 	\{ 'name': 'staging', 'connection': 'extra= -w 50000 -s ^|:type=ASE:user=mbosa:passwd=pwd:srvname=localhost:dbname=test:port=5000' },
-]
+]}
 ```
 
 The default connection will be loaded when the project first is and can be switched with the ":DBSwitch" command.
