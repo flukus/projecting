@@ -20,17 +20,7 @@ fun! projecting_tab_name#getName()
 		endif
 	endif
 
-
-
-	if exists('t:ext_tab_name')
-		return t:ext_tab_name
-	endif
-
-	if exists('b:project.name')
-		return b:project.name
-	endif
-
-		"default to the file name
+	"default to the file name
 	return expand('%:t')
 endf
 
