@@ -1,6 +1,11 @@
 # Projecting
 
-Projecting is an simple, fast and extendable project switcher for vim with the following features:
+Projecting is an simple, fast and extendable project switcher for vim.
+Rather than being a way to manage or create projects like other plugins,
+it is simply a way to tie the configuration of various plugins together.
+The only configuration required is to tell projecting the name of a project and where it is.
+
+It comes with the following features:
 
 
 * Easy configuration in pure vim script
