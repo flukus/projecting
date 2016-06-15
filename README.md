@@ -208,7 +208,7 @@ The default connection will be loaded when the project is and can be switched wi
 
 ## Custom extensions
 
-Custom extensions are very similar to project hooks, they have an activated and deactivated command:
+Custom extensions are built with hooks similar to the project ones. There is an activated and deactivated hook:
 
 ```vim
 function! myplugin#activated()
