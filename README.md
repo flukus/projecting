@@ -25,6 +25,14 @@ nmap <Leader>pd :DBSwitch "this is how you switch databases with the dbext exten
 nmap <leader>pm :call projecting_make#make()<CR> "call the default make option of the make extensions
 ```
 
+## Installation
+
+If you're using pathogen:
+
+```
+git submodule add https://github.com/flukus/projecting.git bundle/dbext
+```
+
 
 ## Configuration
 
@@ -86,10 +94,12 @@ My vimfiles project for example, has a command to add new projects:
 
 ```vim
 function! vimfiles#onActivate()
+	"add the command
 	command! -nargs=1 AddProject call vimfiles#AddProject(<f-args>)
 endfunction
 
 function! vimfiles#onDeactivate()
+	"delete the command
 	delc AddProject
 endfunction
 
@@ -193,10 +203,23 @@ The extensions makes it easy to switch database connections on a per project bas
 ]}
 ```
 
-The default connection will be loaded when the project first is and can be switched with the ":DBSwitch" command.
+The default connection will be loaded when the project is and can be switched with the ":DBSwitch" command.
 
 
 ## Custom extensions
 
-More to follow
+Custom extensions are very similar to project hooks, they have an activated and deactivated command:
+
+```vim
+function! myplugin#activated()
+	"get the settings for my plugin
+	let settings = b:project.ext_myplugin
+	"set a project variable
+	let b:project._myplugin = {}
+	let b:project._myplugin.foo = 'bar'
+endfunction
+
+function! myplugin#deactivated()
+endfunction
+```
 
