@@ -68,7 +68,7 @@ call projecting#create({
 ```
 
 Because it is just a normal vim file any code can go in here.
-To make reloading and configuring easier it is recommended to add aut0 reloading (projecting will play nice):
+To make reloading and configuring easier it is recommended to add auto reloading (projecting will play nice):
 
 ```vim
 augroup vimfilesGroup " {
@@ -78,7 +78,7 @@ augroup END " }
 ```
 
 Child projects can be configured just by setting the parent name, projecting will handle the rest.
-Here is how projecting itself is configures in my vimfiles:
+Here is how projecting itself is configured in my vimfiles:
 
 ```vim
 call projecting#create({
