@@ -1,15 +1,13 @@
 # Projecting
 
-Projecting is an simple, fast and extendable project switcher for vim.
-Rather than being a way to manage or create projects like other plugins,
-it is simply a way to tie the configuration of various plugins together.
-The only configuration required is to tell projecting the name of a project and where it is.
+Projecting is an simple, fast and extendable project switcher and project configuration manager for vim.
+It aims to be the glue between your projects, vim settings and various plugins.
 
 It comes with the following features:
 
-
+* Quick and simple project switching
+* Sets working directory to the project root
 * Easy configuration in pure vim script
-* Sets working directory for the current file
 * Support for nested/child projects
 * A number of built in extensions for popular plugins
 * Easy to extend
@@ -51,6 +49,7 @@ call projecting#create({
 
 Calling ":ProjectLoad vimfiles" will switch the working directory to the project and load the vimrc file.
 Then it will set any extension settings.
+Alternatively, opening any file in the project will apply the same settings.
 
 This can be in your vimrc, although it's recommended to go in a project file like "~/vimfiles/projects/vimfiles.vim .
 It's up to you to source the file in your vimrc.
