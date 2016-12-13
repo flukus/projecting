@@ -198,7 +198,7 @@ The extensions makes it easy to switch database connections on a per project bas
 ```vim
 \'ext_dbe': { 'databases': [
 	\{ 'name': 'test1', 'default': 1, 'connection': 'extra= -w 50000 -s ^|:type=ASE:user=mbosa:passwd=pwd:srvname=localhost:dbname=test:port=5000' },
-	\{ 'name': 'staging', 'connection': 'extra= -w 50000 -s ^|:type=ASE:user=mbosa:passwd=pwd:srvname=localhost:dbname=test:port=5000' },
+	\{ 'name': 'staging', 'connection': 'extra= -w 50000 -s ^|:type=ASE:user=username:passwd=pwd:srvname=localhost:dbname=test:port=5000' },
 ]}
 ```
 
