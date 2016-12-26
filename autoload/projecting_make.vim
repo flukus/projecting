@@ -9,24 +9,26 @@ endfunction
 function! projecting_make#activated()
 	if g:projecting_make#makeAsync == 1
 		call projecting_make_async#activated()
-		return
 	endif
 	command! -n=* -complete=customlist,projecting_make#makeComplete Make call projecting_make#make(<f-args>)
+	command! -n=0 MakeReset call projecting_make#MakeReset()
 endfunction
 
 function! projecting_make#deactivated()
 	if g:projecting_make#makeAsync == 1
 		call projecting_make_async#deactivated()
-		return
 	endif
 	if exists(':Make')
 		delc Make
+		delc MakeReset
 	endif
 endfunction
 
 function! projecting_make#make(...)
 	if g:projecting_make#makeAsync == 1
-		call projecting_make_async#deactivated()
+		"call projecting_make_async#Build(a:000)
+		call call('projecting_make_async#Build', a:000)
+		return
 	endif
 	if !exists('b:project')
 		return
@@ -63,3 +65,8 @@ function! projecting_make#makeComplete(arg, line, pos)
 	call sort(results)
 	return results
 endfunction
+
+fun! projecting_make#MakeReset()
+	let b:project.vars.building = 0
+	let b:project.vars.queueBuild = 0
+endf!

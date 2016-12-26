@@ -1,7 +1,6 @@
 augroup projecting " {
 	autocmd!
 	au BufEnter * call projecting#autoLoad()
-	au BufWritePost * call ProjectMakeAuto()
 augroup END " }
 
 if !exists('s:projects')
@@ -30,7 +29,7 @@ function! projecting#create(project)
 		if exists('s:projects.' . l:p.parent)
 			let parent = s:projects[l:p.parent]
 		else
-			let parent = projecting#create({'name': l:p.parent})
+			let parent = p"rojecting#create({'name': l:p.parent})
 		end
 		"not nice, but better than the user doing it
 		let parent._projects[l:p.name] = l:p
@@ -121,6 +120,9 @@ fun! projecting#initProject(project)
 	let b:project = a:project
 	let projdir = substitute(a:project.dir, '\\\\', '\\','g')
 	exec 'lcd '. projdir
+	if !exists('b:project.vars')
+		let b:project.vars = { }
+	endif
 endf
 
 function! projecting#setCurrentProject(project)
@@ -186,84 +188,7 @@ function! projecting#deactivateProject(project)
 
 endfunction
 
-
-function! ProjectMakeAuto()
-	if !exists('b:project') || !exists('b:project.makeAuto') || b:project.makeAuto == 0
-		return
-	endif
-	call ProjectMake()
-endfunction
-
-function! OutHandler(job, message)
-endfunction
-
-function! ProjectMake(...)
-	if !exists('b:project')
-		return
-	endif
-
-	if b:project.vars.building == 1
-		let b:project.vars.queueBuild = 1
-		return
-	endif
-	let b:project.vars.building = 1
-
-	let b:project.errorCount = '*'
-	exec "AirlineRefresh"
-
-	let target = exists('b:project.makeDefault') ? b:project.makeDefault : ''
-	if a:0 > 0
-		let target = join(a:000, " ")
-	endif
-
-	let currentBuf = bufnr('%')
-	let makeBufNum = bufnr('make_buffer', 1)
-	let b:project.vars.makeBufNum = makeBufNum
-	exec makeBufNum . 'bufdo %d'
-	exec 'b ' . currentBuf
-
-	let cmd = b:project.makePrg . ' ' . target
-	let job = job_start(cmd, {'out_io': 'buffer', 'out_name': 'make_buffer', 'out_cb': 'OutHandler', 'exit_cb': 'ExitHandler'})
-	"let job.project = b:project
-
-endfunction
-
-function! ProjectMakeComplete(arg, line, pos)
-	return exists('b:project.makeOptions') ? b:project.makeOptions : []
-endfunction
-command! -n=* -complete=customlist,ProjectMakeComplete ProjectMake call ProjectMake(<f-args>)
-
-function! ExitHandler(job, status)
-	let b:project.vars.building = 0
-	"set the error format
-	if exists('b:project.efm')
-		let &efm = b:project.efm
-	elseif exists('b:project.efmFunc')
-		exec 'call ' . b:project.efmFunc . '()'
-	endif
-
-	"load the errors from the make buffer
-	exec 'silent! cb! ' . b:project.vars.makeBufNum
-
-	"set the error count for display in airline
-	let list = getqflist()
-	let ecount = 0
-	for i in list
-		if i.type == "E"
-			let ecount+=1
-		endif
-	endfor
-	let b:project.errorCount = ecount
-	exec "AirlineRefresh"
-
-	if b:project.vars.queueBuild == 1
-		let b:project.vars.queueBuild = 0
-		call ProjectMake()
-	endif
-
-endfunction
-
-if !exists('projecting#debug')
+if !exists('s:debug')
 	let s:debug = 0
 endif
 fun! projecting#debug(message)
@@ -271,8 +196,5 @@ fun! projecting#debug(message)
 		echom a:message
 	endif
 endf
-command! -n=* -complete=customlist,ProjectMakeComplete ProjectingSetDebug let s:debug = 1
-
-
-
+command! -n=0 ProjectingSetDebug let s:debug = 1
 
